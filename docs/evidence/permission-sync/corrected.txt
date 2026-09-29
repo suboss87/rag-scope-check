@@ -1,0 +1,3 @@
+RAG scope check: PASS (1 case)
+acme/finance: authorized recall=1.00 (1 scored), underfill=0.00, leaking cases=0
+Exit code: 0

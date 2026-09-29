@@ -1,0 +1,36 @@
+{
+  "verdict": "PASS",
+  "case_count": 1,
+  "cohorts": [
+    {
+      "tenant": "acme",
+      "cohort": "finance",
+      "cases": 1,
+      "scored_cases": 1,
+      "mean_authorized_recall": 1.0,
+      "underfill_rate": 0.0,
+      "leaking_cases": 0
+    }
+  ],
+  "failures": [],
+  "cases": [
+    {
+      "id": "acme-finance-expense",
+      "tenant": "acme",
+      "cohort": "finance",
+      "authorized_recall": 1.0,
+      "authorized_relevant_count": 1,
+      "leaked_doc_ids": [],
+      "unauthorized_candidate_ids": [],
+      "underfilled_top_k": false,
+      "candidate_underfill": false,
+      "ranker_underfill": false,
+      "policy_age_hours": 0.0
+    }
+  ],
+  "limits": {
+    "min_cohort_recall": 0.8,
+    "max_underfill_rate": 0.0,
+    "max_policy_age_hours": null
+  }
+}
