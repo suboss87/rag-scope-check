@@ -21,21 +21,8 @@ Direct `evaluate([])` also previously returned PASS; it now raises InputError,
 as do duplicate case IDs passed directly to evaluate. Valid iterators remain
 supported. Tests exercise the CLI boundary and existing valid examples.
 
-## Integration decision
+## Integration boundary
 
-Defer a Honcho exporter. [Honcho #1048](https://github.com/plastic-labs/honcho/issues/1048)
-reports filtered vector-search underfill. The inspected
-[query source](https://github.com/plastic-labs/honcho/blob/9d6fe8ca5dc666b99ef04bc00047fea4ca675017/src/crud/document.py#L334)
-uses workspace/observer/observed metadata predicates. An exact scan with those
-same predicates cannot establish independent permission truth. Current
-[route authorization tests](https://github.com/plastic-labs/honcho/blob/main/tests/routes/test_auth_route_policy.py)
-separately test peer membership read scopes; the mapping from those scopes to
-a complete, independently captured document permission snapshot was not
-established. No Honcho fixture or deployment was executed. This is a bounded
-inspection, not a claim that an independent oracle is impossible.
+The current release checks exported cases and includes a synthetic SQLite example. A real retrieval integration still needs permissions from an independent source system and reviewed relevance labels. An exact search using the same index filters cannot establish permission truth.
 
-[pgvector](https://github.com/pgvector/pgvector#filtering) already documents
-iterative scans and filtering tradeoffs. Do not package that established tuning
-advice as a novel product. Today's change instead repairs a reproduced defect
-in this project's evidence boundary. It adds no database integration or proof
-of market adoption.
+The input-integrity fix repairs a reproduced defect in this tool's evidence handling. It adds no database connector, production validation or proof of market adoption.
