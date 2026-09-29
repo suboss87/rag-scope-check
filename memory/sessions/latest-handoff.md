@@ -16,7 +16,12 @@ issues and reproduced both paths. Initial discovery from workspace root failed
 because `tests/` lives inside the product clone; all reported test results use
 the correct repository root.
 
-Pending: push, draft PR and remote CI verification. Do not merge automatically.
+Published: [draft PR #1](https://github.com/suboss87/rag-scope-check/pull/1).
+Remote [push CI](https://github.com/suboss87/rag-scope-check/actions/runs/36528649769)
+and [PR CI](https://github.com/suboss87/rag-scope-check/actions/runs/36528686400)
+passed for implementation commit `95aec5c` (Python 3.11, all 10 tests plus clean
+fixture gate). This final documentation update will trigger CI again; consult
+the PR checks for the latest head. Pending: human draft review. Do not merge automatically.
 Next smallest product step after review: scope one real retrieval export backed
 by a source permission oracle; explicitly test empty/invalid evidence. No generic
 skill. Current demo remains synthetic and establishes no production readiness.

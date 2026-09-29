@@ -12,4 +12,5 @@ No evaluator changes, new dependencies, integration, or production claims.
 - [x] Corrected CLI evidence passes those identical thresholds, with zero leaks.
 - [x] Test that sync changes only the index ACL table and preserves the oracle/labels.
 - [x] Document actual output and complete separate review (no findings).
-- [ ] Complete remote CI and open draft PR.
+- [x] Open [draft PR #1](https://github.com/suboss87/rag-scope-check/pull/1).
+- [x] Remote push and PR CI pass for implementation commit `95aec5c`.
