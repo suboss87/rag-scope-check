@@ -22,7 +22,9 @@ See a real failure shape:
 python3 -m rag_scope_check examples/regression.jsonl --min-cohort-recall 0.8 --max-underfill-rate 0
 ```
 
-This exits `1`: one case returns an unauthorized document, and the finance cohort also misses the authorized answer. Invalid or incomplete input exits `2`. Use `--format json` for a machine-readable report.
+This exits `1`: one case returns an unauthorized document, and the finance cohort also misses the authorized answer. Invalid or incomplete input exits `2`. Duplicate JSON fields are rejected, including
+repeated permission fields; the parser never silently chooses the last value.
+Empty batches and duplicate case IDs are also rejected by the Python API. Use `--format json` for a machine-readable report.
 
 The [SQLite demo](examples/sqlite_acl_demo.py) runs an actual full-text retrieval query against a stale index ACL copy while checking permissions against a separate source table. It shows a **safe but unhelpful** result without relying on a static fixture:
 

@@ -1,31 +1,14 @@
-# Build handoff — 2026-09-29
+# Handoff — 2026-09-29 evidence integrity
 
-Branch: `factory/permission-sync-demo`, based on `2eb75ee`.
+Branch: factory/reject-ambiguous-evidence, based on main15d6607.
+Reproduced duplicate authorized_doc_ids JSON fields silently overwriting denial
+and producing PASS; direct evaluate([]) also returned PASS. Reject duplicate
+object fields with line diagnostics, empty and duplicate API case batches,
+and nonobject API cases. Valid metrics and iterators unchanged.
 
-Completed: `examples/sqlite_acl_demo.py --sync-permissions` corrects only the index
-ACL table. Added two tests in `tests/test_sqlite_demo.py`, documented actual output
-in README, and preserved both failure/success exports and reports under
-`docs/evidence/permission-sync/`. That directory also records source coverage,
-alternatives and limits. No evaluator, dependencies, scheduler or profile changes.
-
-Validation: `python3 -m unittest discover -s tests -v` passes 10 tests. Real CLI
-demo at recall >=0.8 and underfill <=0: stale exits 1 (recall 0, underfill 1,
-zero leaks); corrected exits 0 (recall 1, underfill 0, zero leaks). Existing clean
-fixture gate passes. `git diff --check` passes. Independent reviewer found no
-issues and reproduced both paths. Initial discovery from workspace root failed
-because `tests/` lives inside the product clone; all reported test results use
-the correct repository root.
-
-Published: [draft PR #1](https://github.com/suboss87/rag-scope-check/pull/1).
-Remote [push CI](https://github.com/suboss87/rag-scope-check/actions/runs/36528649769)
-and [PR CI](https://github.com/suboss87/rag-scope-check/actions/runs/36528686400)
-passed for implementation commit `95aec5c` (Python 3.11, all 10 tests plus clean
-fixture gate). This final documentation update will trigger CI again; consult
-the PR checks for the latest head. Pending: human draft review. Do not merge automatically.
-Next smallest product step after review: scope one real retrieval export backed
-by a source permission oracle; explicitly test empty/invalid evidence. No generic
-skill. Current demo remains synthetic and establishes no production readiness.
-
-Access: GitHub requires elevated network access in this sandbox; authenticated gh
-worked after escalation. raggate public source/issues could not be located, so
-the comparison is documentation-only and absence of a capability is unproven.
+12 tests pass, including both CLI formats exiting2 with empty stdout for
+ambiguous evidence. Fixture/repro in docs/evidence/input-integrity/README.md.
+No dependencies installed. Honcho integration deferred: inspected source
+filters and route auth tests do not yet establish independent source oracle.
+Jev scout narrow_scope accepted; parent is evaluating this new defect packet.
+Pending: independent review, draft PR CI; do not merge without review.

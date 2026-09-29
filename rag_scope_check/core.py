@@ -32,15 +32,26 @@ def _time(value, field):
     return parsed
 
 
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise InputError(f"duplicate JSON field {key!r}")
+        result[key] = value
+    return result
+
+
 def load_cases(path):
     cases, seen = [], set()
     for line_number, line in enumerate(Path(path).read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         try:
-            case = json.loads(line)
+            case = json.loads(line, object_pairs_hook=_unique_object)
         except json.JSONDecodeError as exc:
             raise InputError(f"line {line_number}: invalid JSON: {exc.msg}") from exc
+        except InputError as exc:
+            raise InputError(f"line {line_number}: {exc}") from exc
         if not isinstance(case, dict):
             raise InputError(f"line {line_number}: each line must be an object")
         case_id = case.get("id")
@@ -56,6 +67,8 @@ def load_cases(path):
 
 
 def evaluate_case(case):
+    if not isinstance(case, dict):
+        raise InputError("each case must be an object")
     case_id, tenant, cohort, k = case.get("id"), case.get("tenant"), case.get("cohort"), case.get("k")
     if not isinstance(case_id, str) or not case_id.strip():
         raise InputError("id must be a nonempty string")
@@ -116,7 +129,15 @@ def evaluate(cases, min_cohort_recall=None, max_underfill_rate=None, max_policy_
     if max_policy_age_hours is not None and (not math.isfinite(max_policy_age_hours) or max_policy_age_hours < 0):
         raise InputError("max_policy_age_hours must be nonnegative")
 
-    results = [evaluate_case(case) for case in cases]
+    results, seen = [], set()
+    for case in cases:
+        result = evaluate_case(case)
+        if result["id"] in seen:
+            raise InputError(f'duplicate case id {result["id"]}')
+        seen.add(result["id"])
+        results.append(result)
+    if not results:
+        raise InputError("input has no cases")
     groups = defaultdict(list)
     for result in results:
         groups[(result["tenant"], result["cohort"])].append(result)
