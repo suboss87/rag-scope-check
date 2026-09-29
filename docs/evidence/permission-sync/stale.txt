@@ -1,0 +1,7 @@
+RAG scope check: FAIL (1 case)
+acme/finance: authorized recall=0.00 (1 scored), underfill=1.00, leaking cases=0
+! acme-finance-expense: top-k underfilled at candidate generation
+! acme-finance-expense: authorized recall=0.00
+- acme/finance: authorized recall below 0.8 or unscored
+- acme/finance: underfill rate above 0
+Exit code: 1

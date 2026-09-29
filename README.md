@@ -31,7 +31,42 @@ python3 examples/sqlite_acl_demo.py > /tmp/rag-scope-case.jsonl
 python3 -m rag_scope_check /tmp/rag-scope-case.jsonl --min-cohort-recall 0.8 --max-underfill-rate 0
 ```
 
-The second command exits `1` for low authorized recall and top-k underfill, with zero leaked documents.
+The second command exits `1` for low authorized recall and top-k underfill, with zero leaked documents. Actual output:
+
+```text
+RAG scope check: FAIL (1 case)
+acme/finance: authorized recall=0.00 (1 scored), underfill=1.00, leaking cases=0
+! acme-finance-expense: top-k underfilled at candidate generation
+! acme-finance-expense: authorized recall=0.00
+- acme/finance: authorized recall below 0.8 or unscored
+- acme/finance: underfill rate above 0
+```
+
+Now synchronize the index permission copy from the source table and retrieve again:
+
+```sh
+python3 examples/sqlite_acl_demo.py --sync-permissions > /tmp/rag-scope-corrected.jsonl
+python3 -m rag_scope_check /tmp/rag-scope-corrected.jsonl --min-cohort-recall 0.8 --max-underfill-rate 0
+```
+
+This gate exits `0`, using **identical thresholds**:
+
+```text
+RAG scope check: PASS (1 case)
+acme/finance: authorized recall=1.00 (1 scored), underfill=0.00, leaking cases=0
+```
+
+The stale query returns only `handbook`; the corrected query returns `handbook`
+and `policy-v3`. Only the index ACL copy changes. Both modes build the same corpus,
+source grants, query, reviewed relevance label (`policy-v3`), and k=2. Source checks
+remain independent of the index ACL. Run the gates separately: they describe two
+states of the same case, not two queries to average into a single cohort score.
+
+This is a planted missed-grant example in an in-memory SQLite FTS5 database, not a
+production permission-sync implementation or a vector-search benchmark. Its source
+table is a simulated oracle; a real integration must obtain permissions independently
+from the source system. Underfill alone cannot diagnose a stale grant. Python must
+include SQLite FTS5; no packages or services are installed by the demo.
 
 ## Feed it from your pipeline
 

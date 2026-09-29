@@ -1,0 +1,1 @@
+{"id": "acme-finance-expense", "tenant": "acme", "cohort": "finance", "k": 2, "eligible_doc_count": 3, "authorized_doc_ids": ["handbook", "policy-v3"], "relevant_doc_ids": ["policy-v3"], "candidate_doc_ids": ["handbook"], "returned_doc_ids": ["handbook"], "policy_as_of": "2026-09-29T05:56:07.292231+00:00", "retrieved_at": "2026-09-29T05:56:07.292231+00:00"}
