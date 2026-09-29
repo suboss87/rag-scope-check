@@ -1,6 +1,12 @@
 # RAG Scope Check
 
-Check whether a permission-aware retrieval path is both safe **and** useful to the people allowed to use it. A filter can prevent a cross-tenant leak while leaving a finance user with only generic public documents. RAG Scope Check reports unauthorized context, authorized recall by permission cohort, and underfilled top-k results from exported retrieval cases. It runs locally with Python's standard library; no model or vector database is needed for the check.
+**Help employees find the information they are entitled to use.**
+
+An internal assistant can keep restricted documents hidden and still miss the policy its user needs. That can leave a task unfinished or send another question to the support team. RAG Scope Check helps teams catch that gap before a retrieval change goes live.
+
+Give it exported retrieval cases and reviewed permissions. It checks for unauthorized context, missed permitted answers by user group, and incomplete result sets. It runs locally with Python's standard library; no model or vector database is needed for the check.
+
+**Status:** experimental checker with a reproducible SQLite example. Connectors to real permission systems and validation in an operational environment remain open. It detects problems in supplied evidence; it does not synchronize permissions or secure an assistant on its own.
 
 ## Try it
 
@@ -90,7 +96,6 @@ Set `--min-cohort-recall` and `--max-underfill-rate` to thresholds appropriate t
 
 The check proves what the exported cases show under the supplied policy snapshot and relevance labels. It cannot prove that every user or document is safe, that the permission oracle is correct, or that a model did not receive text through another path. An underfilled result identifies a symptom, not its root cause. Opaque IDs, cohort names, and reports may still be sensitive; keep them within your normal access controls.
 
-This tool complements permission-leak gates such as [raggate](https://raggate.net/). The immediate problem came from a [practitioner's account of ACL-safe retrieval losing useful private sources](https://www.reddit.com/r/Rag/comments/1w3q78p/our_rag_permissions_filter_is_safe_and_still/). A [Milvus permission-check issue](https://github.com/milvus-io/milvus/issues/53721) is a separate reminder to test the authorization boundary itself. These are product signals, not adoption claims.
 
 ## Development
 
