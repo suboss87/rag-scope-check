@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,6 +12,36 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ScopeCheckTests(unittest.TestCase):
+    def test_empty_and_duplicate_batches_fail_closed(self):
+        case = load_cases(ROOT / "examples/clean.jsonl")[0]
+        for batch, message in (([], "input has no cases"),
+                               (iter([]), "input has no cases"),
+                               ([case, case], "duplicate case id"),
+                               ([None], "each case must be an object")):
+            with self.subTest(message=message), self.assertRaisesRegex(InputError, message):
+                evaluate(batch)
+        self.assertEqual(evaluate(iter([case]))["verdict"], "PASS")
+
+    def test_duplicate_policy_field_is_invalid_in_both_cli_formats(self):
+        # A last-key-wins parser changes a denied ID into an allowed one.
+        ambiguous = ('{"id":"q","tenant":"t","cohort":"c","k":1,'
+                     '"eligible_doc_count":1,"authorized_doc_ids":[],'
+                     '"authorized_doc_ids":["secret"],"relevant_doc_ids":[],'
+                     '"returned_doc_ids":["secret"]}')
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "ambiguous.jsonl"
+            path.write_text("\n" + ambiguous + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(InputError, "line 2: duplicate JSON field"):
+                load_cases(path)
+            for output_format in ("text", "json"):
+                result = subprocess.run(
+                    [sys.executable, "-m", "rag_scope_check", str(path),
+                     "--format", output_format], cwd=ROOT, capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("line 2: duplicate JSON field 'authorized_doc_ids'", result.stderr)
+
     def test_authorized_recall_excludes_forbidden_relevant_docs(self):
         case = {
             "id": "q1", "tenant": "acme", "cohort": "finance", "k": 1, "eligible_doc_count": 1,

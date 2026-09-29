@@ -14,3 +14,16 @@ No evaluator changes, new dependencies, integration, or production claims.
 - [x] Document actual output and complete separate review (no findings).
 - [x] Open [draft PR #1](https://github.com/suboss87/rag-scope-check/pull/1).
 - [x] Remote push and PR CI pass for implementation commit `95aec5c`.
+
+## Evidence integrity (2026-09-29)
+
+Goal: reject ambiguous or empty evidence instead of reporting PASS.
+Context: reproduced empty direct API batch and duplicate permission JSON fields
+returning PASS on main. Honcho source-oracle integration remains unproven.
+Constraints: standard library, preserve existing valid exports/metrics.
+
+- [x] Reproduce false PASS before editing.
+- [x] Reject duplicate JSON object fields with line-number diagnostics.
+- [x] Reject empty/duplicate direct API case batches and invalid case objects.
+- [x] Verify CLI exit 2 without PASS output, existing examples, and 12 tests.
+- [ ] Independent review and draft PR.
